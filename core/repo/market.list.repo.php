@@ -163,91 +163,105 @@ function displayWidgetSubtype($_name) {
     }
 </style>
 
-<div style="margin-bottom: 5px; margin-top : 5px; background-color: #e7e7e7">
-    <form class="form-inline" role="form" onsubmit="return false;">
-        <?php if (init('type', 'plugin') == 'plugin') {?>
-        <div class="form-group">
-            <div class="btn-group" >
-                <a class="btn btn-default bt_pluginFilter <?php echo (init('cost') == 'free') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('cost', 'free'); ?>">{{Gratuit}}</a>
-                <a class="btn btn-default bt_pluginFilter <?php echo (init('cost') == 'paying') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('cost', 'paying'); ?>">{{Payant}}</a>
-                <a class="btn btn-default bt_pluginFilter" data-href="<?php echo buildUrl('cost', ''); ?>"><i class="fa fa-times"></i></a>
+<section class="content-header">
+    <div class="action-bar">
+        <div class="action-group">
+            <a class="btn btn-danger btn-action-bar" href="index.php?v=d&p=plugin"><i class="fas fa-chevron-left spacing-right"></i>{{Retour}}</a>
+            <?php if (init('type', 'plugin') == 'plugin') {?>
+                <div class="btn-group" >
+                    <a class="btn btn-default bt_pluginFilter <?php echo (init('cost') == 'free') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('cost', 'free'); ?>">{{Gratuit}}</a>
+                    <a class="btn btn-default bt_pluginFilter <?php echo (init('cost') == 'paying') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('cost', 'paying'); ?>">{{Payant}}</a>
+                    <a class="btn btn-default bt_pluginFilter" data-href="<?php echo buildUrl('cost', ''); ?>"><i class="fa fa-times"></i></a>
+                </div>
+                <div class="btn-group" >
+                    <a class="btn btn-default bt_pluginFilter <?php echo (init('certification') == 'Officiel') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('certification', 'Officiel'); ?>">{{Officiel}}</a>
+                    <a class="btn btn-default bt_pluginFilter <?php echo (init('certification') == 'Conseillé') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('certification', 'Conseillé'); ?>">{{Conseillé}}</a>
+                    <a class="btn btn-default bt_pluginFilter <?php echo (init('certification') == 'Legacy') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('certification', 'Legacy'); ?>">{{Legacy}}</a>
+                    <a class="btn btn-default bt_pluginFilter" data-href="<?php echo buildUrl('certification', ''); ?>"><i class="fa fa-times"></i></a>
+                </div>
+                <div class="btn-group" >
+                    <a class="btn btn-default bt_installFilter" data-state="-1">{{Installé}}</a>
+                    <a class="btn btn-default bt_installFilter" data-state="1">{{Non installé}}</a>
+                    <a class="btn btn-default bt_installFilter" data-state="0"><i class="fa fa-times"></i></a>
+                </div>
+            <?php }?>
+            <div class="btn-group">
+                <select class="form-control" id="sel_categorie" data-href='<?php echo buildUrl('categorie', ''); ?>'>
+                    <?php
+                        if (init('categorie') == '') {
+                            echo '<option value="" selected>{{Top et nouveautés}}</option>';
+                        } else {
+                            echo '<option value="">{{Top et nouveautés}}</option>';
+                        }
+                        if ($type !== null && $type != 'plugin') {
+                            foreach (repo_market::distinctCategorie($type) as $id => $category) {
+                                if (trim($category) != '' && is_numeric($id)) {
+                                    echo '<option value="' . $category . '"';
+                                    echo (init('categorie') == $category) ? 'selected >' : '>';
+                                    echo $category;
+                                    echo '</option>';
+                                }
+                            }
+                        } else {
+                            global $NEXTDOM_INTERNAL_CONFIG;
+                            foreach ($NEXTDOM_INTERNAL_CONFIG['plugin']['category'] as $key => $value) {
+                                echo '<option value="' . $key . '"';
+                                echo (init('categorie') == $key) ? 'selected >' : '>';
+                                echo $value['name'];
+                                echo '</option>';
+                            }
+                        }
+                    ?>
+                </select>
             </div>
         </div>
-        <?php }
-?>
-        <div class="form-group">
-            <div class="btn-group" >
-                <a class="btn btn-default bt_pluginFilter <?php echo (init('certification') == 'Officiel') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('certification', 'Officiel'); ?>">{{Officiel}}</a>
-                <a class="btn btn-default bt_pluginFilter <?php echo (init('certification') == 'Conseillé') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('certification', 'Conseillé'); ?>">{{Conseillé}}</a>
-                <a class="btn btn-default bt_pluginFilter <?php echo (init('certification') == 'Legacy') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('certification', 'Legacy'); ?>">{{Legacy}}</a>
-                <a class="btn btn-default bt_pluginFilter" data-href="<?php echo buildUrl('certification', ''); ?>"><i class="fa fa-times"></i></a>
-            </div>
+        <div class="action-group">
+            <?php
+                if (config::byKey('market::username') != '') {
+                    echo '<span class="label label-info pull-right label-sticker-big pull-right">' . config::byKey('market::username');
+                    try {
+                        repo_market::test();
+                        echo ' <i class="fa fa-check"></i>';
+                    } catch (Exception $e) {
+                        echo ' <i class="fa fa-times"></i>';
+                    }
+                    echo '</span>';
+                }
+            ?>
         </div>
-        <div class="form-group">
-            <div class="btn-group" >
-                <a class="btn btn-default bt_installFilter" data-state="-1">{{Installé}}</a>
-                <a class="btn btn-default bt_installFilter" data-state="1">{{Non installé}}</a>
-                <a class="btn btn-default bt_installFilter" data-state="0"><i class="fa fa-times"></i></a>
-            </div>
-        </div>
-        <div class="form-group">
-            <select class="form-control" id="sel_categorie" data-href='<?php echo buildUrl('categorie', ''); ?>'>
-                <?php
-if (init('categorie') == '') {
-    echo '<option value="" selected>{{Top et nouveautés}}</option>';
-} else {
-    echo '<option value="">{{Top et nouveautés}}</option>';
-}
-if ($type !== null && $type != 'plugin') {
-    foreach (repo_market::distinctCategorie($type) as $id => $category) {
-        if (trim($category) != '' && is_numeric($id)) {
-            echo '<option value="' . $category . '"';
-            echo (init('categorie') == $category) ? 'selected >' : '>';
-            echo $category;
-            echo '</option>';
-        }
-    }
-} else {
-    global $NEXTDOM_INTERNAL_CONFIG;
-    foreach ($NEXTDOM_INTERNAL_CONFIG['plugin']['category'] as $key => $value) {
-        echo '<option value="' . $key . '"';
-        echo (init('categorie') == $key) ? 'selected >' : '>';
-        echo $value['name'];
-        echo '</option>';
-    }
-}
-?>
-        </select>
     </div>
-    <div class="form-group">
-        <input class="form-control" data-href='<?php echo buildUrl('name', ''); ?>' placeholder="Rechercher" id="in_search" value="<?php echo $name ?>"/>
-        <a class="btn btn-success" id="bt_search" data-href='<?php echo buildUrl('name', ''); ?>'><i class="fa fa-search"></i></a>
-    </div>
-    <div class="form-group">
-        <?php
-if (config::byKey('market::username') != '') {
-    echo '<span class="label label-info pull-right txtSizeNormal">' . config::byKey('market::username');
-    try {
-        repo_market::test();
-        echo ' <i class="fa fa-check"></i>';
-    } catch (Exception $e) {
-        echo ' <i class="fa fa-times"></i>';
-    }
-    echo '</span>';
-}
-
-?>
-    </div>
-</form>
-</div>
+</section>
 <?php
 if ($name !== null && strpos($name, '$') !== false) {
     echo '<a class="btn btn-default" id="bt_returnMarketList" style="margin-top : 50px;" data-href=' . buildUrl('name', '') . '><i class="fa fa-arrow-circle-left"></i> {{Retour}}</a>';
 }
 ?>
+<section class="content">
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fas fa-shopping-cart spacing-right"></i>{{Market Jeedom}}</h3>
+        </div>
+        <div class="box-body"></div>
+    </div>
+
+    <div class="box-group" id="">
+        <div class="panel box">
+            <a class="box-header with-border accordion-toggle" data-toggle="collapse" data-parent="" href="#config_none"></a>
+            <h3 class="box-title">
+                <a class="box-header with-border accordion-toggle" data-toggle="collapse" data-parent="" href="#config_none"></a>
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionScenario" href="#config_none" style="text-decoration:none;">Aucun - 1 scénario(s)</a>
+            </h3>
+
+            <div id="config_none" class="panel-collapse collapse in">
+                <div class="box-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-<div style="padding : 5px;">
+
     <?php
 $categorie = '';
 $first = true;
@@ -282,7 +296,7 @@ foreach ($markets as $market) {
     if (!is_object($update)) {
         $install = 'install';
     }
-    echo '<div class="market cursor ' . $install . '" data-market_id="' . $market->getId() . '" data-market_type="' . $market->getType() . '" style="background-color : #ffffff; height : 220px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
+    echo '<div class="market cursor ' . $install . '" data-category="' . $market->getCategorie(). '" data-name="' . $market->getName() . '" data-market_id="' . $market->getId() . '" data-market_type="' . $market->getType() . '" style="background-color : #ffffff; height : 220px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
 
     if ($market->getType() != 'widget') {
         if ($market->getCertification() == 'Officiel') {
@@ -367,16 +381,7 @@ if ($default) {
     echo '</div>';
 }
 ?>
-</div>
-<style>
-    .market:hover{
-        background-color : #F2F1EF !important;
-    }
-
-    #md_modal{
-        background-color: #e7e7e7
-    }
-</style>
+</section>
 
 <script>
     $(function () {
@@ -393,21 +398,11 @@ if ($default) {
         }, 500);
 
         $('.bt_pluginFilter').on('click', function () {
-            $('#md_modal').load($(this).attr('data-href'));
+            loadPage($(this).attr('data-href'));
         });
 
         $('#sel_categorie').on('change', function () {
-            $('#md_modal').load($(this).attr('data-href') + '&categorie=' + encodeURI($(this).value()));
-        });
-
-        $('#bt_search').on('click', function () {
-            $('#md_modal').load($(this).attr('data-href') + '&name=' + encodeURI($('#in_search').value()));
-        });
-
-        $('#in_search').keypress(function (e) {
-            if (e.which == 13) {
-                $('#md_modal').load($(this).attr('data-href') + '&name=' + encodeURI($('#in_search').value()));
-            }
+            marketFilter('category', $(this).value());
         });
 
         $('#bt_returnMarketList').on('click', function () {
@@ -452,4 +447,34 @@ if ($default) {
             $('#md_modal2').load('index.php?v=d&modal=update.display&type=' + $(this).attr('data-market_type') + '&id=' + $(this).attr('data-market_id')+'&repo=market').dialog('open');
         });
     });
+
+    function marketFilter(filter, value) {
+        switch (filter) {
+            case 'name':
+                if (value === '') {
+                    $('.market').show();
+                }
+                else {
+                    $('.market').hide();
+                    $('.market').each(function () {
+                        var listTitle = $(this).attr('data-name').toLowerCase();
+                        if (listTitle.indexOf(value) !== -1) {
+                            $(this).show();
+                        }
+                    });
+                }
+            break;
+
+            case 'category':
+                $('.market').hide();
+                $('.market').each(function () {
+                    var listTitle = $(this).attr('data-category').toLowerCase();
+                    if (listTitle.indexOf(value) !== -1) {
+                        $(this).show();
+                    }
+                });
+            break;
+        }
+        $('.pluginContainer').packery();
+    };
 </script>

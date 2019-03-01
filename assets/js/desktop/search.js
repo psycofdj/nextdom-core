@@ -40,7 +40,14 @@ $('#generalSearch').keyup(function () {
 
 function generalSearchOnPages(value) {
     var search = value;
-    var page = document.location.toString().split('p=')[1].replace('#', '').split('&')[0];
+    var page = '';
+    if (document.location.toString().indexOf('p=') != -1) {
+        page = document.location.toString().split('p=')[1].replace('#', '').split('&')[0];
+    } else {
+        if (document.location.toString().indexOf('modal=') != -1) {
+            page = document.location.toString().split('modal=')[1].replace('#', '').split('&')[0];
+        }
+    }
     switch (page) {
         case 'plugin':
             if (search === '') {
@@ -57,6 +64,7 @@ function generalSearchOnPages(value) {
             }
             $('.pluginListContainer').packery();
             break;
+
         case 'interact':
             if (search === '') {
                 $('.panel-collapse.in').closest('.panel').find('.accordion-toggle.collapsed').click();
@@ -74,6 +82,7 @@ function generalSearchOnPages(value) {
             }
             $('.interactListContainer').packery();
             break;
+
         case 'scenario':
             if (search === '') {
                 $('.panel-collapse.in').closest('.panel').find('.accordion-toggle.collapsed').click();
@@ -91,6 +100,7 @@ function generalSearchOnPages(value) {
             }
             $('.scenarioListContainer').packery();
             break;
+
         case 'dashboard':
             if (search === '') {
                 $('.eqLogic-widget').show();
@@ -136,6 +146,7 @@ function generalSearchOnPages(value) {
                 });
             }
             break;
+
         case 'object':
             if (search == '') {
                 $('.objectDisplayCard').show();
@@ -206,7 +217,7 @@ function generalSearchOnPages(value) {
             }
             break;
 
-    case 'system':
+        case 'system':
             if (search === '') {
                 $('.list-group-item').show();
             }
@@ -221,35 +232,43 @@ function generalSearchOnPages(value) {
             }
             break;
 
-      case 'note':
-          if (search === '') {
-              $('.li_noteDisplay').show();
-          }
-          else {
-              $('.li_noteDisplay').hide();
-              $('.li_noteDisplay .label-list').each(function () {
-                  var listTitle = $(this).text().toLowerCase();
-                  if (listTitle.indexOf(search) !== -1) {
-                      $(this).closest('.li_noteDisplay').show();
-                  }
-              });
-          }
-          break;
+        case 'note':
+            if (search === '') {
+                $('.li_noteDisplay').show();
+            }
+            else {
+                $('.li_noteDisplay').hide();
+                $('.li_noteDisplay .label-list').each(function () {
+                    var listTitle = $(this).text().toLowerCase();
+                    if (listTitle.indexOf(search) !== -1) {
+                        $(this).closest('.li_noteDisplay').show();
+                    }
+                });
+            }
+            break;
 
-      case 'log':
-          if (search === '') {
-              $('.label-log').show();
-          }
-          else {
-              $('.label-log').hide();
-              $('.label-log').each(function () {
-                  var listTitle = $(this).text().toLowerCase();
-                  if (listTitle.indexOf(search) !== -1) {
-                      $(this).show();
-                  }
-              });
-          }
-          break;
+        case 'log':
+            if (search === '') {
+                $('.label-log').show();
+            }
+            else {
+                $('.label-log').hide();
+                $('.label-log').each(function () {
+                    var listTitle = $(this).text().toLowerCase();
+                    if (listTitle.indexOf(search) !== -1) {
+                        $(this).show();
+                    }
+                });
+            }
+            break;
+
+        case 'market':
+            updateFilteredList();
+            break;
+
+        case 'update.list':
+            marketFilter('name', search);
+            break;
     }
 };
 

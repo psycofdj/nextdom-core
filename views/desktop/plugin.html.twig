@@ -37,12 +37,13 @@
     <section class="content-header">
         <div class="action-bar">
             <div class="action-group">
+                <a class="btn btn-danger btn-action-bar" href="index.php?v=d&p=administration"><i class="fas fa-chevron-left spacing-right"></i>{{ 'Retour'}}</a>
                 <a class="btn btn-default" id="bt_addPluginFromOtherSource"><i class="fas fa-plus spacing-right"></i>{{ 'Autre Sources' }}</a>
             </div>
             <div class="action-group">
                 {% for repoCode, repoData in pluginReposList %}
                     {% if repoData['name'] == 'Market' %}
-                        <a class="btn btn-success displayStore jeedomGreen" data-repo="{{ repoCode }}"><i class="fa fa-shopping-cart spacing-right"></i>{{ repoData['name'] }} Jeedom</a>
+                        <a class="btn btn-default displayStore jeedomGreen" data-repo="{{ repoCode }}"><i class="fa fa-shopping-cart spacing-right"></i>{{ 'Jeedom '}} {{ repoData['name'] }}</a>
                     {% else %}
                         <a class="btn btn-primary displayStore" data-repo="{{ repoCode }}"><i class="fa fa-shopping-cart spacing-right"></i>{{ repoData['name'] }}</a>
                     {% endif %}

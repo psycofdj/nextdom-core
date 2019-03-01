@@ -39,6 +39,7 @@ function initDataModal() {
     $('#category .list-info').text(currentPlugin['category']);
     $('#gitid .list-info').text(currentPlugin['gitId']);
     $('#gitrepo .list-info').text(currentPlugin['gitName']);
+    $('#plugin-name').text(currentPlugin['name']);
 
     if (currentPlugin['changelogLink'] === null) {
         $('#changelog-link').css('display', 'none');
@@ -86,7 +87,7 @@ function initInstallationButtons() {
             removePlugin(currentPlugin['id']);
         });
         if (currentPlugin['installedBranchData'] !== false) {
-            $('#install-plugin').parent().hide();
+            $('#install-plugin').hide();
             var installedBranch = currentPlugin['installedBranchData']['branch'];
             $('#default-branch-information').text('Branche ' + installedBranch);
             initBranchesChoice(currentPlugin['branchesList'], installedBranch);
@@ -96,14 +97,14 @@ function initInstallationButtons() {
                 });
             }
             else {
-                $('#update-plugin').parent().hide();
+                $('#update-plugin').hide();
             }
         }
     }
     else {
-        $('#remove-plugin').parent().hide();
-        $('#update-plugin').parent().hide();
-        $('#config-plugin').parent().hide();
+        $('#remove-plugin').hide();
+        $('#update-plugin').hide();
+        $('#config-plugin').hide();
     }
 }
 
@@ -148,11 +149,11 @@ function initBranchesChoice(branchesList, defaultBranchChoice) {
             }
         }
         $('#get-branches-informations').css('display', 'none');
-        $('#install-plugin-advanced').css('display', 'block');
+        $('#install-plugin-advanced').css('display', 'inline-block');
     }
     else {
         $('#get-branches-informations').css('display', 'none');
-        $('#install-plugin-advanced').css('display', 'block');
+        $('#install-plugin-advanced').css('display', 'inline-block');
         $('#install-plugin-advanced button').addClass("disabled");
     }
 }

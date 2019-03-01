@@ -48,23 +48,25 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            <select class="market-filter-category" id="market-filter-category">
-                <option value="all">{{ 'Toutes les Catégories' }}</option>
-                <option value="security">{{ 'Sécurité' }}</option>
-                <option value="automation protocol">{{ 'Protocole domotique' }}</option>
-                <option value="programming">{{ 'Programmation' }}</option>
-                <option value="organization">{{ 'Organisation' }}</option>
-                <option value="weather">{{ 'Météo' }}</option>
-                <option value="communication">{{ 'Communication' }}</option>
-                <option value="devicecommunication">{{ 'Objets communicants' }}</option>
-                <option value="multimedia">{{ 'Multimédia' }}</option>
-                <option value="wellness">{{ 'Bien-être' }}</option>
-                <option value="monitoring">{{ 'Monitoring' }}</option>
-                <option value="health">{{ 'Santé' }}</option>
-                <option value="nature">{{ 'Nature' }}</option>
-                <option value="automatisation">{{ 'Automatisme' }}</option>
-                <option value="energy">{{ 'Energie' }}</option>
-            </select>
+            <div class="btn-group">
+                <select class="form-control" id="market-filter-category">
+                    <option value="all">{{ 'Toutes les Catégories' }}</option>
+                    <option value="security">{{ 'Sécurité' }}</option>
+                    <option value="automation protocol">{{ 'Protocole domotique' }}</option>
+                    <option value="programming">{{ 'Programmation' }}</option>
+                    <option value="organization">{{ 'Organisation' }}</option>
+                    <option value="weather">{{ 'Météo' }}</option>
+                    <option value="communication">{{ 'Communication' }}</option>
+                    <option value="devicecommunication">{{ 'Objets communicants' }}</option>
+                    <option value="multimedia">{{ 'Multimédia' }}</option>
+                    <option value="wellness">{{ 'Bien-être' }}</option>
+                    <option value="monitoring">{{ 'Monitoring' }}</option>
+                    <option value="health">{{ 'Santé' }}</option>
+                    <option value="nature">{{ 'Nature' }}</option>
+                    <option value="automatisation">{{ 'Automatisme' }}</option>
+                    <option value="energy">{{ 'Energie' }}</option>
+                </select>
+            </div>
         </div>
         <div class="action-group" id="admin-buttons">
             <a class="btn btn-warning btn-action-bar pull-right" id="mass-update"><i class="fas fa-download spacing-right"></i>{{ 'Mise(s) à jour' }}</a>
@@ -76,13 +78,9 @@
 <section class="content">
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="fas fa-puzzle-piece spacing-right"></i>{{ 'Market Nextdom' }}</h3>
+            <h3 class="box-title"><i class="fas fa-shopping-cart spacing-right"></i>{{ 'Market Nextdom' }}</h3>
         </div>
         <div class="box-body">
-            <div class="input-group form-group">
-                <div class="input-group-addon"><i class="fas fa-search"></i></div>
-                <input class="form-control" id="market-search" placeholder="{{ 'Rechercher...' }}"/>
-            </div>
             <div class="row" id="market-div">
 
             </div>
@@ -90,21 +88,18 @@
     </div>
 </section>
 
-<div class="modal fade" id="market-modal" tabindex="-1" role="dialog" aria-labelledby="market-modal-title"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="market-modal">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="market-modal-title"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button class="bootbox-close-button close" data-dismiss="modal">×</button>
+                <h4 class="modal-title" id="market-modal-title"></h4>
             </div>
             <div class="modal-body" id="market-modal-content">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'Fermer' }}</button>
-                <button type="button" id="market-modal-valid" class="btn btn-primary"></button>
+                <a class="btn btn-danger" data-dismiss="modal"><i class="fas fa-minus-circle spacing-right"></i>{{ 'Annuler' }}</a>
+                <a class="btn btn-warning" id="market-modal-valid"><i class="fas fa-check spacing-right"></i><span id="market-modal-valid-text"></span></a>
             </div>
         </div>
     </div>

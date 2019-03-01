@@ -81,7 +81,7 @@ $(function () {
 
     var fullUrl = document.location.toString();
     if (fullUrl.indexOf('rescue') === -1) {
-        var page = fullUrl.split('p=')[1].replace('#', '').split('&')[0];
+        var page ='';
         var availableSearchPage = [
             "plugin",
             "dashboard",
@@ -94,7 +94,16 @@ $(function () {
             "note",
             "system",
             "log",
+            "market",
+            "update.list",
         ];
+        if (document.location.toString().indexOf('p=') != -1) {
+            page = fullUrl.split('p=')[1].replace('#', '').split('&')[0];
+        } else {
+              if (document.location.toString().indexOf('modal=') != -1) {
+                  page = fullUrl.split('modal=')[1].replace('#', '').split('&')[0];
+              }
+        }
 
         if(jQuery.inArray(page, availableSearchPage) != -1) {
             $("#generalSearch").prop('disabled', false);

@@ -117,10 +117,6 @@ function initEvents() {
         }
         updateFilteredList();
     });
-    $('#market-search').keyup(function () {
-        currentSearchValue = $(this).val().toLowerCase();
-        updateFilteredList();
-    });
     $('#refresh-markets').click(function () {
         refresh(true);
     });
@@ -134,7 +130,7 @@ function initEvents() {
             }
             contentHtml += '</ul>';
             $('#market-modal-content').html(contentHtml);
-            $('#market-modal-valid').text(updateStr);
+            $('#market-modal-valid-text').text(updateStr);
             $('#market-modal').modal('show');
             $('#market-modal-valid').click(function () {
                 updatePlugin(currentPlugin['installedBranchData']['id'], true);
@@ -180,6 +176,7 @@ function setActive(button, activate) {
  * Met à jour la liste des éléments affichés
  */
 function updateFilteredList() {
+    currentSearchValue = $('#generalSearch').val().toLowerCase();
     $('#market-div>div').each(function () {
         var hide = false;
         var dataSource = $(this).data('source');
@@ -275,7 +272,7 @@ function showItems(items) {
     $('.update-marker').click(function () {
         $('#market-modal-title').text(updateStr);
         $('#market-modal-content').text(updateThisStr);
-        $('#market-modal-valid').text(updateStr);
+        $('#market-modal-valid-text').text(updateStr);
         $('#market-modal').modal('show');
         currentPlugin = $(this).parent().data('plugin');
         $('#market-modal-valid').click(function () {
@@ -347,8 +344,8 @@ function getItemHtml(item) {
     if (item['description'] == null) {
         item['description'] = '';
     }
-    if (item['description'].length > 155) {
-        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 155) + '...</p>';
+    if (item['description'].length > 170) {
+        descriptionPar = '<p class="truncate">' + item['description'].substr(0, 170) + '...</p>';
     }
     else {
         descriptionPar = '<p>' + item['description'] + '</p>';
@@ -363,14 +360,14 @@ function getItemHtml(item) {
         '<div class="media-container col-xs-12 col-sm-6 col-md-4" data-source="' + item['sourceName'] + '" data-category="' + item['category'] + '" data-installed="' + item['installed'] + '">' +
         '<div class="media" data-plugin="' + pluginData + '">';
     if (item['installed']) {
-        result += '<div class="installed-marker"><i data-toggle="tooltip" title="' + installedPluginStr + '" class="fas fa-check"></i></div>';
+        result += '<div class="installed-marker"><i data-toggle="tooltip" data-placement="bottom" title="' + installedPluginStr + '" class="fas fa-check"></i></div>';
     }
     if (item['installedBranchData'] !== false && item['installedBranchData']['needUpdate'] == true) {
-        result += '<div class="update-marker"><i data-toggle="tooltip" title="' + updateAvailableStr + '" class="fas fa-download"></i></div>';
+        result += '<div class="update-marker"><i data-toggle="tooltip" data-placement="bottom" title="' + updateAvailableStr + '" class="fas fa-download"></i></div>';
         pluginsUpdateNeededList.push(item);
     }
     result += '' +
-        '<h4>' + title + '</h4>' +
+        '<h4 class="media-title">' + title + '</h4>' +
         '<div class="media-content">' +
         '<div class="media-left">' +
         '<img src="' + iconPath + '"/>' +

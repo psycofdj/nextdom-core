@@ -64,7 +64,8 @@ page-title:
   notes: Notes
   database: OS/DB
   scenarios: Scénarios
-  objects: Objets
+  objets: Objets
+  plugins: Plugins
 
 administration:
   cpu: CPU
