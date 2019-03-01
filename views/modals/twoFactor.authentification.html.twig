@@ -84,8 +84,7 @@
     <div class="box-body">
         <form class="form-horizontal">
             <fieldset>
-                <center>{{ 'Veuillez entrer le code fourni pour vérification et activation de la double authentification' }}</center>
-                <br/>
+                <p class="alert alert-info">{{ 'Veuillez entrer le code fourni pour vérification et activation de la double authentification :' }}</p>
                 <div class="form-group">
                     <label class="col-xs-4 control-label">{{ 'Code de test' }}</label>
                     <div class="col-xs-3">
@@ -93,6 +92,9 @@
                     </div>
                     <div class="col-xs-2">
                         <a class="btn btn-success" id="bt_validateTestCode">{{ 'OK' }}</a>
+                    </div>
+                    <div class="col-xs-3">
+                        <a class="btn btn-danger" id="bt_closeTestCode" style="display:none"><i class="fas fa-times spacing-right"></i>{{ 'Fermer' }}</a>
                     </div>
                 </div>
             </fieldset>
@@ -111,10 +113,16 @@
             success: function (data) {
                 if (data) {
                     notify("authentification", '{{ 'Configuration réussie' }}', 'success');
+                    $('#bt_validateTestCode').hide();
+                    $('#bt_closeTestCode').show();
                 } else {
                     notify("authentification", '{{ 'Code invalide' }}', 'error');
+                    $('#in_testCode').value('');
                 }
             }
         });
+    });
+    $('#bt_closeTestCode').on('click', function () {
+        $('#md_modal').dialog('close');
     });
 </script>
