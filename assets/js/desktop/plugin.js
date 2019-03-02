@@ -415,8 +415,7 @@ $("#bt_savePluginConfig").on('click', function (event) {
 $('.displayStore').on('click', function () {
     var repo = $(this).attr('data-repo');
     if (repo.indexOf('nextdom') === -1) {
-        $('#md_modal').dialog({title: "{{Market}}"});
-        $('#md_modal').load('index.php?v=d&modal=update.list').dialog('open');
+        loadPage('index.php?v=d&modal=update.list');
     }
     else {
         loadPage('index.php?v=d&p=market&type=core');

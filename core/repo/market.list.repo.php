@@ -35,7 +35,7 @@ if ($author == null && $name === null && $categorie === null && init('certificat
             'cost' => init('cost', null),
             'timeState' => init('timeState'),
             'certification' => init('certification', null),
-            'limit' => 50,
+            'limit' => 100,
         )
     );
 }
@@ -149,76 +149,94 @@ function displayWidgetSubtype($_name) {
 }
 ?>
 
-<style type="text/css">
-    .noPaddingLeft { padding-left: 0;}
-    .noPaddingRight { padding-right: 0;}
-    .noMarginBottom { margin-bottom: 0;}
-    .noPaddingWell {
-        padding-bottom: 0;
-        padding-top: 0;
-    }
-
-    .market:hover{
-        background-color : #F2F1EF !important;
-    }
-</style>
-
 <section class="content-header">
     <div class="action-bar">
         <div class="action-group">
             <a class="btn btn-danger btn-action-bar" href="index.php?v=d&p=plugin"><i class="fas fa-chevron-left spacing-right"></i>{{Retour}}</a>
             <?php if (init('type', 'plugin') == 'plugin') {?>
-                <div class="btn-group" >
-                    <a class="btn btn-default bt_pluginFilter <?php echo (init('cost') == 'free') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('cost', 'free'); ?>">{{Gratuit}}</a>
-                    <a class="btn btn-default bt_pluginFilter <?php echo (init('cost') == 'paying') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('cost', 'paying'); ?>">{{Payant}}</a>
-                    <a class="btn btn-default bt_pluginFilter" data-href="<?php echo buildUrl('cost', ''); ?>"><i class="fa fa-times"></i></a>
+                <div class="btn-group">
+                    <a class="btn btn-default bt_pluginFilterCost" data-filter="free">{{Gratuit}}</a>
+                    <a class="btn btn-default bt_pluginFilterCost" data-filter="paying">{{Payant}}</a>
+                    <a class="btn btn-primary bt_pluginFilterCost" data-filter=""><i class="fa fa-times"></i></a>
                 </div>
-                <div class="btn-group" >
-                    <a class="btn btn-default bt_pluginFilter <?php echo (init('certification') == 'Officiel') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('certification', 'Officiel'); ?>">{{Officiel}}</a>
-                    <a class="btn btn-default bt_pluginFilter <?php echo (init('certification') == 'Conseillé') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('certification', 'Conseillé'); ?>">{{Conseillé}}</a>
-                    <a class="btn btn-default bt_pluginFilter <?php echo (init('certification') == 'Legacy') ? 'btn-primary' : '' ?>" data-href="<?php echo buildUrl('certification', 'Legacy'); ?>">{{Legacy}}</a>
-                    <a class="btn btn-default bt_pluginFilter" data-href="<?php echo buildUrl('certification', ''); ?>"><i class="fa fa-times"></i></a>
+                <div class="btn-group">
+                    <a class="btn btn-default bt_pluginFilterCertification" data-filter="Officiel">{{Officiel}}</a>
+                    <a class="btn btn-default bt_pluginFilterCertification" data-filter="Conseillé">{{Conseillé}}</a>
+                    <a class="btn btn-default bt_pluginFilterCertification" data-filter="Legacy">{{Legacy}}</a>
+                    <a class="btn btn-primary bt_pluginFilterCertification" data-filter=""><i class="fa fa-times"></i></a>
                 </div>
-                <div class="btn-group" >
-                    <a class="btn btn-default bt_installFilter" data-state="-1">{{Installé}}</a>
-                    <a class="btn btn-default bt_installFilter" data-state="1">{{Non installé}}</a>
-                    <a class="btn btn-default bt_installFilter" data-state="0"><i class="fa fa-times"></i></a>
+                <div class="btn-group">
+                    <a class="btn btn-default bt_pluginFilterInstall" data-filter="notInstall">{{Installé}}</a>
+                    <a class="btn btn-default bt_pluginFilterInstall" data-filter="install">{{Non installé}}</a>
+                    <a class="btn btn-primary bt_pluginFilterInstall" data-filter=""><i class="fa fa-times"></i></a>
                 </div>
             <?php }?>
             <div class="btn-group">
-                <select class="form-control" id="sel_categorie" data-href='<?php echo buildUrl('categorie', ''); ?>'>
+                <div class="input-group" >
                     <?php
-                        if (init('categorie') == '') {
-                            echo '<option value="" selected>{{Top et nouveautés}}</option>';
-                        } else {
-                            echo '<option value="">{{Top et nouveautés}}</option>';
+                    $oldSearch = '';
+                    if ($name != '') {
+                        $oldSearch = $name;
+                    } else {
+                        if ($author != '') {
+                            $oldSearch = $author;
                         }
-                        if ($type !== null && $type != 'plugin') {
-                            foreach (repo_market::distinctCategorie($type) as $id => $category) {
-                                if (trim($category) != '' && is_numeric($id)) {
-                                    echo '<option value="' . $category . '"';
-                                    echo (init('categorie') == $category) ? 'selected >' : '>';
-                                    echo $category;
-                                    echo '</option>';
-                                }
-                            }
-                        } else {
-                            global $NEXTDOM_INTERNAL_CONFIG;
-                            foreach ($NEXTDOM_INTERNAL_CONFIG['plugin']['category'] as $key => $value) {
-                                echo '<option value="' . $key . '"';
-                                echo (init('categorie') == $key) ? 'selected >' : '>';
-                                echo $value['name'];
-                                echo '</option>';
-                            }
-                        }
+                    }
+                    echo '<input type="text" class="form-control" id="pluginSearch" placeholder="Rechercher..." data-value=' . $oldSearch .'>'
                     ?>
-                </select>
+                    <div class="input-group-btn">
+                        <a class="btn btn-success" id="pluginNameSearch"><i class="fas fa-search-plus"></i></a>
+                        <a class="btn btn-success" id="authorSearch"><i class="fas fa-user"></i></a>
+                        <a class="btn btn-action" id="resetSearch"><i class="fas fa-times"></i></a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="action-group">
+          <div class="btn-group">
+              <select class="form-control" id="sel_categorie">
+                  <?php
+                      if (init('categorie') == '') {
+                          echo '<option value="" selected>{{Top et nouveautés}}</option>';
+                      } else {
+                          echo '<option value="">{{Top et nouveautés}}</option>';
+                      }
+                      if ($type !== null && $type != 'plugin') {
+                          foreach (repo_market::distinctCategorie($type) as $id => $category) {
+                              if (trim($category) != '' && is_numeric($id)) {
+                                  echo '<option value="' . $category . '"';
+                                  echo (init('categorie') == $category) ? 'selected >' : '>';
+                                  echo $category;
+                                  echo '</option>';
+                              }
+                          }
+                      } else {
+                          global $NEXTDOM_INTERNAL_CONFIG;
+                          foreach ($NEXTDOM_INTERNAL_CONFIG['plugin']['category'] as $key => $value) {
+                              echo '<option value="' . $key . '"';
+                              echo (init('categorie') == $key) ? 'selected >' : '>';
+                              echo $value['name'];
+                              echo '</option>';
+                          }
+                      }
+                  ?>
+              </select>
+          </div>
+        </div>
+    </div>
+</section>
+<?php
+if ($name !== null && strpos($name, '$') !== false) {
+    echo '<a class="btn btn-default" id="bt_returnMarketList" style="margin-top : 50px;" data-href=' . buildUrl('name', '') . '><i class="fa fa-arrow-circle-left"></i> {{Retour}}</a>';
+}
+?>
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title"><i class="fas fa-shopping-cart spacing-right"></i>{{Market Jeedom}}</h3>
             <?php
                 if (config::byKey('market::username') != '') {
-                    echo '<span class="label label-info pull-right label-sticker-big pull-right">' . config::byKey('market::username');
+                    echo '<span class="label label-info pull-right label-sticker pull-right">' . config::byKey('market::username');
                     try {
                         repo_market::test();
                         echo ' <i class="fa fa-check"></i>';
@@ -230,37 +248,6 @@ function displayWidgetSubtype($_name) {
             ?>
         </div>
     </div>
-</section>
-<?php
-if ($name !== null && strpos($name, '$') !== false) {
-    echo '<a class="btn btn-default" id="bt_returnMarketList" style="margin-top : 50px;" data-href=' . buildUrl('name', '') . '><i class="fa fa-arrow-circle-left"></i> {{Retour}}</a>';
-}
-?>
-<section class="content">
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fas fa-shopping-cart spacing-right"></i>{{Market Jeedom}}</h3>
-        </div>
-        <div class="box-body"></div>
-    </div>
-
-    <div class="box-group" id="">
-        <div class="panel box">
-            <a class="box-header with-border accordion-toggle" data-toggle="collapse" data-parent="" href="#config_none"></a>
-            <h3 class="box-title">
-                <a class="box-header with-border accordion-toggle" data-toggle="collapse" data-parent="" href="#config_none"></a>
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionScenario" href="#config_none" style="text-decoration:none;">Aucun - 1 scénario(s)</a>
-            </h3>
-
-            <div id="config_none" class="panel-collapse collapse in">
-                <div class="box-body">
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-
 
     <?php
 $categorie = '';
@@ -279,24 +266,32 @@ foreach ($markets as $market) {
         $categorie = $category;
         if (!$default) {
             if (!$first) {
-                echo '</div>';
+                echo '</div></div></div></div></div>';
             }
+            echo '<div class="box-group" id="accordionPlugin">';
+            echo '<div class="panel box">';
+            echo '<a class="box-header with-border accordion-toggle" data-toggle="collapse" data-parent="" href="#config_' . $nCategory . '">';
+            echo '<h3 class="box-title">';
             if (isset($NEXTDOM_INTERNAL_CONFIG['plugin']['category'][$categorie])) {
-                echo '<legend style="border-bottom: 1px solid #34495e; color : #34495e;" data-category="' . $nCategory . '"><i class="fa ' . $NEXTDOM_INTERNAL_CONFIG['plugin']['category'][$categorie]['icon'] . '"></i> ' . ucfirst($NEXTDOM_INTERNAL_CONFIG['plugin']['category'][$categorie]['name']) . '</legend>';
+                echo '<span class="accordion-toggle" data-toggle="collapse" data-parent="#accordionPlugin" href="#config_none" style="text-decoration:none;" data-category="' . $nCategory . '"><i class="fa ' . $NEXTDOM_INTERNAL_CONFIG['plugin']['category'][$categorie]['icon'] . ' spacing-right"></i> ' . ucfirst($NEXTDOM_INTERNAL_CONFIG['plugin']['category'][$categorie]['name']) . '</span>';
             } else {
-                echo '<legend style="border-bottom: 1px solid #34495e; color : #34495e;" data-category="' . $nCategory . '">' . ucfirst($categorie) . '</legend>';
+                echo '<span class="accordion-toggle" data-toggle="collapse" data-parent="#accordionPlugin" href="#config_none" style="text-decoration:none;" data-category="' . $nCategory . '">' . ucfirst($categorie) . '</span>';
             }
-            echo '<div class="pluginContainer" data-category="' . $nCategory . '">';
+            echo '</h3>';
+            echo '</a>';
+            echo '<div id="config_' . $nCategory . '" class="panel-collapse collapse in">';
+            echo '<div class="box-body">';
+            echo '<div class="pluginContainer DisplayCard text-center" data-category="' . $nCategory . '">';
         }
         $first = false;
         $nCategory++;
     }
 
-    $install = 'notInstall';
+    $installClass = 'notInstall';
     if (!is_object($update)) {
-        $install = 'install';
+        $installClass = 'install';
     }
-    echo '<div class="market cursor ' . $install . '" data-category="' . $market->getCategorie(). '" data-name="' . $market->getName() . '" data-market_id="' . $market->getId() . '" data-market_type="' . $market->getType() . '" style="background-color : #ffffff; height : 220px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
+    echo '<div class="market cursor ' . $installClass . '" data-install="' . $installClass . '" data-category="' . $market->getCategorie() . '" data-cost="' . $market->getCost() . '" data-certification="' . $market->getCertification() . '" data-name="' . $market->getName() . '" data-market_id="' . $market->getId() . '" data-market_type="' . $market->getType() . '" style="border-radius: 4px;background-color : #ffffff; height : 220px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
 
     if ($market->getType() != 'widget') {
         if ($market->getCertification() == 'Officiel') {
@@ -392,89 +387,134 @@ if ($default) {
         });
         $("img.lazy").trigger("sporty");
         initTableSorter();
+        marketFilter();
+
+        $('#pluginSearch').value($('#pluginSearch').attr('data-value'));
 
         setTimeout(function () {
             $('#table_market tbody tr.install').hide();
         }, 500);
 
-        $('.bt_pluginFilter').on('click', function () {
-            loadPage($(this).attr('data-href'));
+        $('.bt_pluginFilterCost').on('click', function () {
+            $('.bt_pluginFilterCost').removeClass('btn-primary');
+            $('.bt_pluginFilterCost').addClass('btn-default');
+            $(this).addClass('btn-primary');
+            $(this).removeClass('btn-default');
+            marketFilter();
+        });
+
+        $('.bt_pluginFilterCertification').on('click', function () {
+            $('.bt_pluginFilterCertification').removeClass('btn-primary');
+            $('.bt_pluginFilterCertification').addClass('btn-default');
+            $(this).addClass('btn-primary');
+            $(this).removeClass('btn-default');
+            marketFilter();
+        });
+
+        $('.bt_pluginFilterInstall').on('click', function () {
+            $('.bt_pluginFilterInstall').removeClass('btn-primary');
+            $('.bt_pluginFilterInstall').addClass('btn-default');
+            $(this).addClass('btn-primary');
+            $(this).removeClass('btn-default');
+            marketFilter();
         });
 
         $('#sel_categorie').on('change', function () {
-            marketFilter('category', $(this).value());
+            loadPage('index.php?v=d&modal=update.list' + '&categorie=' + encodeURI($(this).value()));
         });
 
         $('#bt_returnMarketList').on('click', function () {
             $('#md_modal').load($(this).attr('data-href'));
         });
 
-        $('.marketMultiple').on('click',function(){
-            $('#md_modal').load($(this).attr('data-href') + '&name=' + encodeURI('.'+$(this).attr('data-market_name')));
-        });
-
-        $('.bt_installFilter').on('click', function () {
-            $('.bt_installFilter').removeClass('btn-primary');
-            $('.pluginContainer').show();
-            $('.market').show();
-            if ($(this).attr('data-state') == 1) {
-                $(this).addClass('btn-primary');
-                $('.notInstall').hide();
-            }
-            if ($(this).attr('data-state') == -1) {
-                $(this).addClass('btn-primary');
-                $('.install').hide();
-            }
-            $('.pluginContainer').each(function () {
-                var hasVisible = false;
-                $(this).find('.market').each(function () {
-                    if ($(this).is(':visible')) {
-                        hasVisible = true;
-                    }
-                });
-                if (hasVisible) {
-                    $('legend[data-category=' + $(this).attr('data-category') + ']').show();
-                    $(this).packery();
-                } else {
-                    $(this).hide();
-                    $('legend[data-category=' + $(this).attr('data-category') + ']').hide();
-                }
-            });
-        });
-
         $('.market').on('click', function () {
             $('#md_modal2').dialog({title: "{{Market NextDom}}"});
             $('#md_modal2').load('index.php?v=d&modal=update.display&type=' + $(this).attr('data-market_type') + '&id=' + $(this).attr('data-market_id')+'&repo=market').dialog('open');
         });
+
+        $('#pluginNameSearch').on('click', function () {
+            loadPage('index.php?v=d&modal=update.list' + '&name=' + encodeURI($('#pluginSearch').value()));
+            $('#generalSearch').value('');
+        });
+
+        $('#authorSearch').on('click', function () {
+            loadPage('index.php?v=d&modal=update.list' + '&author=' + encodeURI($('#pluginSearch').value()));
+            $('#generalSearch').value('');
+        });
+
+        $('#resetSearch').on('click', function () {
+            loadPage('index.php?v=d&modal=update.list');
+            $('#generalSearch').value('');
+        });
+
+        $('.accordion-toggle').off('click').on('click', function () {
+         setTimeout(function(){
+           $('.pluginContainer').packery();
+         },100);
+       });
     });
 
-    function marketFilter(filter, value) {
-        switch (filter) {
-            case 'name':
-                if (value === '') {
-                    $('.market').show();
-                }
-                else {
-                    $('.market').hide();
-                    $('.market').each(function () {
-                        var listTitle = $(this).attr('data-name').toLowerCase();
-                        if (listTitle.indexOf(value) !== -1) {
-                            $(this).show();
-                        }
-                    });
-                }
-            break;
+    function marketFilter() {
+        var filterCost = '';
+        var filterCertification = '';
+        var filterInstall = '';
+        var pluginValue = '';
+        $('.market').hide();
+        $('.bt_pluginFilterCost').each(function () {
+            if ($(this).hasClass("btn-primary")) {
+                filterCost = $(this).attr('data-filter');
+            }
+        });
+        $('.bt_pluginFilterCertification').each(function () {
+            if ($(this).hasClass("btn-primary")) {
+                filterCertification = $(this).attr('data-filter');
+            }
+        });
+        $('.bt_pluginFilterInstall').each(function () {
+            if ($(this).hasClass("btn-primary")) {
+                filterInstall = $(this).attr('data-filter');
+            }
+        });
+        var filterCategory = $('#sel_categorie').value();
+        var currentSearchValue = $('#generalSearch').val().toLowerCase();
+        $('.market').show();
 
-            case 'category':
-                $('.market').hide();
-                $('.market').each(function () {
-                    var listTitle = $(this).attr('data-category').toLowerCase();
-                    if (listTitle.indexOf(value) !== -1) {
-                        $(this).show();
-                    }
-                });
-            break;
-        }
+        $('.market').each(function () {
+            if (currentSearchValue != '') {
+                pluginValue = $(this).attr('data-name').toLowerCase();
+                if (pluginValue.indexOf(currentSearchValue) == -1) {
+                    $(this).hide();
+                }
+            }
+
+            if (filterCertification != '') {
+                pluginValue = $(this).attr('data-certification');
+                if (pluginValue.indexOf(filterCertification) == -1) {
+                    $(this).hide();
+                }
+            }
+
+            if (filterCost != '') {
+                pluginValue = $(this).attr('data-cost');
+                if ((pluginValue == 0 && filterCost == 'paying') || (pluginValue > 0 && filterCost == 'free')) {
+                    $(this).hide();
+                }
+            }
+
+            if (filterCategory != '') {
+                pluginValue = $(this).attr('data-category');
+                if (pluginValue.indexOf(filterCategory) == -1) {
+                    $(this).hide();
+                }
+            }
+
+            if (filterInstall != '') {
+                pluginValue = $(this).attr('data-install');
+                if (pluginValue.indexOf(filterInstall) == -1) {
+                    $(this).hide();
+                }
+            }
+        });
         $('.pluginContainer').packery();
     };
 </script>
