@@ -33,7 +33,6 @@ function gen_css {
 	sass assets/css/nextdom.mob.scss public/css/nextdom.mob.css $COMPRESS
 	sass assets/css/firstUse.scss public/css/firstUse.css $COMPRESS
 	sass assets/css/rescue.scss public/css/rescue.css $COMPRESS
-	sass assets/css/Market/market.scss public/css/market.css $COMPRESS
 
 	# Remplacement des chemins
 	sed -i s#\"images/ui-#\"/assets/css/jquery-ui-bootstrap/images/ui-#g public/css/nextdom.css

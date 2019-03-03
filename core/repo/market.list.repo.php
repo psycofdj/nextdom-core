@@ -182,7 +182,7 @@ function displayWidgetSubtype($_name) {
                             $oldSearch = $author;
                         }
                     }
-                    echo '<input type="text" class="form-control" id="pluginSearch" placeholder="Rechercher..." data-value=' . $oldSearch .'>'
+                    echo '<input type="text" class="form-control" id="pluginSearch" placeholder="Recherche globale..." data-value=' . $oldSearch .'>'
                     ?>
                     <div class="input-group-btn">
                         <a class="btn btn-success" id="pluginNameSearch"><i class="fas fa-search-plus"></i></a>
@@ -197,9 +197,9 @@ function displayWidgetSubtype($_name) {
               <select class="form-control" id="sel_categorie">
                   <?php
                       if (init('categorie') == '') {
-                          echo '<option value="" selected>{{Top et nouveautés}}</option>';
+                          echo '<option value="" selected>{{Top & Nouveautés}}</option>';
                       } else {
-                          echo '<option value="">{{Top et nouveautés}}</option>';
+                          echo '<option value="">{{Top & Nouveautés}}</option>';
                       }
                       if ($type !== null && $type != 'plugin') {
                           foreach (repo_market::distinctCategorie($type) as $id => $category) {
@@ -227,7 +227,7 @@ function displayWidgetSubtype($_name) {
 </section>
 <?php
 if ($name !== null && strpos($name, '$') !== false) {
-    echo '<a class="btn btn-default" id="bt_returnMarketList" style="margin-top : 50px;" data-href=' . buildUrl('name', '') . '><i class="fa fa-arrow-circle-left"></i> {{Retour}}</a>';
+    echo '<a class="btn btn-default" id="bt_returnMarketList" style="margin-top : 50px;" data-href=' . buildUrl('name', '') . '><i class="fa fa-arrow-circle-left spacing-right"></i>{{Retour}}</a>';
 }
 ?>
 <section class="content">
@@ -291,28 +291,28 @@ foreach ($markets as $market) {
     if (!is_object($update)) {
         $installClass = 'install';
     }
-    echo '<div class="market cursor ' . $installClass . '" data-install="' . $installClass . '" data-category="' . $market->getCategorie() . '" data-cost="' . $market->getCost() . '" data-certification="' . $market->getCertification() . '" data-name="' . $market->getName() . '" data-market_id="' . $market->getId() . '" data-market_type="' . $market->getType() . '" style="border-radius: 4px;background-color : #ffffff; height : 220px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
+    echo '<div class="market cursor ' . $installClass . '" data-install="' . $installClass . '" data-category="' . $market->getCategorie() . '" data-cost="' . $market->getCost() . '" data-certification="' . $market->getCertification() . '" data-name="' . $market->getName() . '" data-market_id="' . $market->getId() . '" data-market_type="' . $market->getType() . '">';
 
     if ($market->getType() != 'widget') {
         if ($market->getCertification() == 'Officiel') {
-            echo '<div style="position : absolute; right : 0;top:0;width:58px;height:58px;"><img src="public/img/band_Officiel.png" /></div>';
+            echo '<div class="market-certification"><img src="public/img/band_Officiel.png" /></div>';
         }
         if ($market->getCertification() == 'Conseillé') {
-            echo '<div style="position : absolute; right : 0;top:0;width:58px;height:58px;"><img src="public/img/band_Conseille.png" /></div>';
+            echo '<div class="market-certification"><img src="public/img/band_Conseille.png" /></div>';
         }
         if ($market->getCertification() == 'Legacy') {
-            echo '<div style="position : absolute; right : 0;top:0;width:58px;height:58px;"><img src="public/img/band_Legacy.png" /></div>';
+            echo '<div class="market-certification"><img src="public/img/band_Legacy.png" /></div>';
         }
         if ($market->getCertification() == 'Obsolète') {
-            echo '<div style="position : absolute; right : 0;top:0;width:58px;height:58px;"><img src="public/img/band_Obsolete.png" /></div>';
+            echo '<div class="market-certification"><img src="public/img/band_Obsolete.png" /></div>';
         }
     }
 
     if ($market->getType() == 'widget') {
         if (strpos($market->getName(), 'mobile.') !== false) {
-            echo '<i class="fa fa-mobile" style="position: absolute;top: 15px;left: 21px;" title="{{Widget pour la version mobile}}"></i>';
+            echo '<i class="fa fa-mobile market-widget" title="{{Widget pour la version mobile}}"></i>';
         } else {
-            echo '<i class="fa fa-desktop" style="position: absolute;top: 15px;left: 17px;" title="{{Widget pour la version bureau}}"></i>';
+            echo '<i class="fa fa-desktop market-widget" title="{{Widget pour la version bureau}}"></i>';
         }
     }
     if (is_object($update)) {
@@ -335,19 +335,17 @@ foreach ($markets as $market) {
 
     $urlPath = config::byKey('market::address') . '/' . $market->getImg('icon');
     if ($market->getType() == 'widget') {
-        echo '<img class="lazy" src="' . $default_image . '" data-original="' . $urlPath . '" height="105" width="95" style="margin-left: 20px;border: 1px solid #C5C5C5;border-radius:5px; padding: 3px" />';
+        echo '<img class="lazy market-icon" src="' . $default_image . '" data-original="' . $urlPath . '" style="margin-left: 20px;border: 1px solid #C5C5C5;border-radius:5px; padding: 3px" />';
     } else {
-        echo '<img class="lazy" src="' . $default_image . '" data-original="' . $urlPath . '" height="105" width="95" />';
+        echo '<img class="lazy market-icon" src="' . $default_image . '" data-original="' . $urlPath . '"/>';
     }
-
     echo "</center>";
 
-    echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">' . $market->getName() . '</span>';
-
-    echo '<span style="position : absolute;bottom : 25px;right : 12px;font-size : 0.7em;color:#999999;"><span style="font-size : 0.8em;">{{par}}</span> ' . $market->getAuthor() . '</span>';
+    echo '<span class="market-name">' . $market->getName() . '</span>';
+    echo '<span class="market-author"><i>{{par}}</i> ' . $market->getAuthor() . '</span>';
 
     $note = $market->getRating();
-    echo '<span style="position : absolute;bottom : 5px;left : 5px;font-size : 0.7em;">';
+    echo '<span class="market-rating">';
     for ($i = 1; $i < 6; $i++) {
         if ($i <= $note) {
             echo '<i class="fa fa-star"></i>';
@@ -357,7 +355,7 @@ foreach ($markets as $market) {
     }
     echo '</span>';
     if ($market->getCost() > 0) {
-        echo '<span style="position : absolute;bottom : 5px;right : 12px;color:#97bd44;">';
+        echo '<span class="market-cost">';
         if ($market->getPurchase() == 1) {
             echo ' <i class="fa fa-check-circle"></i>';
         } else {
@@ -368,7 +366,7 @@ foreach ($markets as $market) {
         }
         echo '</span>';
     } else {
-        echo '<span style="position : absolute;bottom : 5px;right : 12px;color:#97bd44;">Gratuit</span>';
+        echo '<span class="market-cost">Gratuit</span>';
     }
     echo '</div>';
 }

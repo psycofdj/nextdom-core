@@ -52,12 +52,7 @@ $warn: #f1c40f;
 $yellow:#BFFF00;
 $lightyellow:#F3E5A7;
 
-/* Accent colors by defaut, the real color is set in adminLTE/skin-xxx */
-$nextdom_accent: $black;
-$nextdom_primary: $black;
-$nextdom_polar_accent: $white;
-$nextdom_table_title: $whitegrey;
-$nextdom_grey_title: $whitegrey;
+$jeedomgreen:#96c927;
 
 .good {
     background-color: $good
@@ -89,14 +84,6 @@ $nextdom_grey_title: $whitegrey;
 
 .nextdom_blue{
     color: $nextdom_blue;
-}
-
-.jeedomGreen{
-    background-color: #96c927;
-    border-color: #96c927;
-}
-.jeedomGreen:hover {
-    background-color: #96c927;
 }
 
 .lightenGrey{
